@@ -176,7 +176,7 @@ export type Turbin3Prereq = {
       args: [];
     },
     {
-      name: "submit_ts";
+      name: "submitTs";
       discriminator: [137, 241, 199, 223, 125, 33, 85, 217];
       accounts: [
         {
@@ -510,7 +510,7 @@ export const IDL: Turbin3Prereq = {
       args: [],
     },
     {
-      name: "submit_ts",
+      name: "submitTs",
       discriminator: [137, 241, 199, 223, 125, 33, 85, 217],
       accounts: [
         {
