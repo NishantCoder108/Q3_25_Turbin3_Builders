@@ -23,12 +23,6 @@ const provider = new AnchorProvider(connection, new Wallet(keypair), {
 const programId = new PublicKey("TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM");
 const program: Program<Turbin3Prereq> = new Program(IDL, provider);
 
-// const program: Program<Turbin3Prereq> = new Program(
-//   IDL,
-//   new PublicKey("TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM"),
-//   provider
-// );
-
 const accountSeeds = [Buffer.from("prereqs"), keypair.publicKey.toBuffer()];
 const [accountKey, _account_bump] = PublicKey.findProgramAddressSync(
   accountSeeds,
@@ -43,48 +37,53 @@ const MPL_CORE_PROGRAM_ID = new PublicKey(
   "CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d"
 );
 
+const [authorityPDA] = PublicKey.findProgramAddressSync(
+  [Buffer.from("collection"), mintCollection.toBuffer()],
+  program.programId
+);
+
 // Step 1: Initialize
-(async () => {
-  try {
-    const txhash = await program.methods
-      .initialize("nishantcoder108")
-      .accountsPartial({
-        user: keypair.publicKey,
-        account: accountKey,
-        system_program: SystemProgram.programId,
-      })
-      .signers([keypair])
-      .rpc();
-
-    console.log(
-      `Initialize TX: https://explorer.solana.com/tx/${txhash}?cluster=devnet`
-    );
-  } catch (e) {
-    console.error(`Init Error: ${e}`);
-  }
-})();
-
-// // Step 2: Submit TS
 // (async () => {
 //   try {
 //     const txhash = await program.methods
-//       .submitTs()
+//       .initialize("nishantcoder108")
 //       .accountsPartial({
 //         user: keypair.publicKey,
 //         account: accountKey,
-//         mint: mintTs.publicKey,
-//         collection: mintCollection,
-//         authority: keypair.publicKey, // this might be PDA instead (check!)
-//         mplCoreProgram: MPL_CORE_PROGRAM_ID,
-//         systemProgram: SystemProgram.programId,
+//         system_program: SystemProgram.programId,
 //       })
-//       .signers([keypair, mintTs])
+//       .signers([keypair])
 //       .rpc();
 
 //     console.log(
-//       `SubmitTX: https://explorer.solana.com/tx/${txhash}?cluster=devnet`
+//       `Initialize TX: https://explorer.solana.com/tx/${txhash}?cluster=devnet`
 //     );
 //   } catch (e) {
-//     console.error(`Submit Error: ${e}`);
+//     console.error(`Init Error: ${e}`);
 //   }
 // })();
+
+// // Step 2: Submit TS
+(async () => {
+  try {
+    const txhash = await program.methods
+      .submitTs()
+      .accountsPartial({
+        user: keypair.publicKey,
+        account: accountKey,
+        mint: mintTs.publicKey,
+        collection: mintCollection,
+        authority: authorityPDA,
+        mpl_core_program: MPL_CORE_PROGRAM_ID,
+        system_program: SystemProgram.programId,
+      })
+      .signers([keypair, mintTs])
+      .rpc();
+
+    console.log(
+      `SubmitTX: https://explorer.solana.com/tx/${txhash}?cluster=devnet`
+    );
+  } catch (e) {
+    console.error(`Submit Error: ${e}`);
+  }
+})();
