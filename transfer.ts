@@ -11,9 +11,7 @@ import wallet from "./dev-wallet.json";
 
 const from = Keypair.fromSecretKey(new Uint8Array(wallet));
 const to = new PublicKey("HiMmuCbieNgDNFd9GbcbVSHYPGPuEgZWwQxJULaJVoVs");
-const connection = new Connection(
-  "https://devnet.helius-rpc.com/?api-key=83b9a8f6-2e80-4b96-a446-b19647efe253"
-);
+const connection = new Connection("https://api.devnet.solana.com");
 
 // (async () => {
 //   try {
@@ -35,6 +33,7 @@ const connection = new Connection(
 //   }
 // })();
 
+// Transfer all SOL from dev wallet to another address
 (async () => {
   try {
     // Get balance of dev wallet

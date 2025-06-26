@@ -3,9 +3,7 @@ import wallet from "./dev-wallet.json";
 
 const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
 // const connection = new Connection("https://api.devnet.solana.com");
-const connection = new Connection(
-  "https://devnet.helius-rpc.com/?api-key=83b9a8f6-2e80-4b96-a446-b19647efe253"
-);
+const connection = new Connection("https://api.devnet.solana.com");
 
 (async () => {
   try {
