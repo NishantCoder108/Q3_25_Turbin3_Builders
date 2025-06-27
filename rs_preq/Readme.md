@@ -11,4 +11,6 @@
 ### Follow:
  1. Airdrop in dev wallet →  https://explorer.solana.com/tx/3MWPXxBUJ9dcevYfzjn6fh9pXcYV7nBLkfHmUy4ja1UG12JgjA6qh2w5FFWCu1sMrtqKt4E4qrs8LfmVJPsvd4VD?cluster=devnet
 
- 2. 
+ 2. Transfer SOL from dev wallet to Turbin wallet →  https://explorer.solana.com/tx/5vCKxt7wVAchjrR8qdaQ4nQQsQRDWD9vXvsvWtWZhNiAKcvNzDbeTt4iDYHNux5NCVBh7PZawmNgbqWB2SChXXzH?cluster=devnet
+
+ 3. 

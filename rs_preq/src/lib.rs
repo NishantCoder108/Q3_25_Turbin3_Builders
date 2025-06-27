@@ -8,10 +8,13 @@ const RPC_URL: &str =
 mod tests {
     use crate::RPC_URL;
     use solana_client::rpc_client::RpcClient;
+    use solana_program::system_instruction::transfer;
     use solana_sdk::{
         pubkey::Pubkey,
         signature::{Keypair, Signer, read_keypair_file},
+        transaction::Transaction,
     };
+    use std::str::FromStr;
 
     #[test]
     fn keygen() {
@@ -40,6 +43,29 @@ mod tests {
 
     #[test]
     fn transfer_sol() {
-        // Add after airdrop
+        let keypair = read_keypair_file("dev-wallet.json").expect("Failed to read keypair");
+        let from_pubkey = keypair.pubkey();
+
+        let to_pubkey = Pubkey::from_str("HiMmuCbieNgDNFd9GbcbVSHYPGPuEgZWwQxJULaJVoVs").unwrap();
+
+        let client = RpcClient::new(RPC_URL.to_string());
+
+        let blockhash = client
+            .get_latest_blockhash()
+            .expect("Failed to get blockhash");
+
+        let tx = Transaction::new_signed_with_payer(
+            &[transfer(&from_pubkey, &to_pubkey, 1_000_000)], // 0.001 SOL
+            Some(&from_pubkey),
+            &[&keypair],
+            blockhash,
+        );
+
+        let sig = client
+            .send_and_confirm_transaction(&tx)
+            .expect("Failed to send tx");
+
+        println!("✅ Transfer Success! Explorer:");
+        println!("https://explorer.solana.com/tx/{}?cluster=devnet", sig);
     }
 }
