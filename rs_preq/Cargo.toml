@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 bs58 = "0.4"
+dotenvy = "0.15.7"
 solana-client = "1.15.2"
 solana-program = "1.15.2"
 solana-sdk = "1.15.2"

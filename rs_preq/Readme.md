@@ -26,3 +26,16 @@ test tests::empty_wallet ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 29.38s
 
  ```
+
+4. Final rs_preq submission →  https://explorer.solana.com/tx/5RmD3EvYW1M7AVjjmWP2JFrhK1DDLs3efVcm4s8qM4A2Getoa8ULP3yDwhiR9Erhpvqu8QxKAJFwYHa12mNhhgAY?cluster=devnet
+
+
+
+#### Accounts:
+- User account →  `HiMmuCbieNgDNFd9GbcbVSHYPGPuEgZWwQxJULaJVoVs`
+- Account PDA →  `J4hZJS4zy6ZKacH6dhBT1J3bdC2S4x3NQyCfLH7it9Fg`
+- Mint →  `7paeMq43x2ezongnY8HvTFjRFTbuXrWjuDs5b4WCYXK9`
+- Collection →  `5ebsp5RChCGK7ssRZMVMufgVZhd2kFbNaotcZ5UvytN2`
+- Authority PDA →  `5xstXUdRJKxRrqbJuo5SAfKf68y7afoYwTeH1FXbsA3k`
+- MPL Core Program →  `CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d`
+- Turbin3 Program →  `TRBZyQHB3m68FGeVsqTK39Wm4xejadjVhP5MAZaKWDM`
