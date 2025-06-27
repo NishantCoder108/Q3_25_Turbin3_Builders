@@ -1,14 +1,25 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use solana_sdk::{
+        pubkey::Pubkey,
+        signature::{Keypair, Signer},
+    };
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn keygen() {
+        let kp = Keypair::new();
+        println!("Wallet pubkey: {}", kp.pubkey());
+        println!("Save private key as JSON:");
+        println!("{:?}", kp.to_bytes());
+    }
+
+    #[test]
+    fn airdrop() {
+        // We will add this after keypair save
+    }
+
+    #[test]
+    fn transfer_sol() {
+        // Add after airdrop
     }
 }
