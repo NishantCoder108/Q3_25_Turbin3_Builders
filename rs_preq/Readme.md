@@ -4,7 +4,7 @@
 - `cargo init --lib` → It is used for initializing a new project.
 - `cargo test keygen` → It is used for testing the keygen function.
 - `cargo build` → It is used for building the project.
-- `cargo test keygen -- --nocapture` → To see prints in the terminal.
+- `cargo test keygen -- --no-capture` → To see prints in the terminal.
 - Create first dev wallet  →  `4hMGUKbfeGAyj1yzB3fhrP8oeSj2h3h7xzan6kC6UNHR`
 
 
@@ -13,4 +13,16 @@
 
  2. Transfer SOL from dev wallet to Turbin wallet →  https://explorer.solana.com/tx/5vCKxt7wVAchjrR8qdaQ4nQQsQRDWD9vXvsvWtWZhNiAKcvNzDbeTt4iDYHNux5NCVBh7PZawmNgbqWB2SChXXzH?cluster=devnet
 
- 3. 
+ 3. Empty dev wallet →  https://explorer.solana.com/tx/5xQYsNZZFfaVFtAwnfKWoHnK1jtDanxJXpqEwPxLf6LS63veXk9HJ1K64QeEUGz6VYAPNQSynkhjt3zzYe4CJLwd?cluster=devnet
+ 
+ ```bash
+ # Look similar to this
+Current balance: 1996985000 lamports
+Estimated fee: 5000 lamports
+✅ Dev wallet emptied!
+https://explorer.solana.com/tx/5xQYsNZZFfaVFtAwnfKWoHnK1jtDanxJXpqEwPxLf6LS63veXk9HJ1K64QeEUGz6VYAPNQSynkhjt3zzYe4CJLwd?cluster=devnet
+test tests::empty_wallet ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 29.38s
+
+ ```

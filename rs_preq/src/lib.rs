@@ -10,6 +10,7 @@ mod tests {
     use solana_client::rpc_client::RpcClient;
     use solana_program::system_instruction::transfer;
     use solana_sdk::{
+        message::Message,
         pubkey::Pubkey,
         signature::{Keypair, Signer, read_keypair_file},
         transaction::Transaction,
@@ -66,6 +67,52 @@ mod tests {
             .expect("Failed to send tx");
 
         println!("✅ Transfer Success! Explorer:");
+        println!("https://explorer.solana.com/tx/{}?cluster=devnet", sig);
+    }
+
+    #[test]
+    fn empty_wallet() {
+        let keypair = read_keypair_file("dev-wallet.json").expect("Failed to read wallet");
+        let from_pubkey = keypair.pubkey();
+
+        let to_pubkey = Pubkey::from_str("HiMmuCbieNgDNFd9GbcbVSHYPGPuEgZWwQxJULaJVoVs").unwrap();
+
+        let client = RpcClient::new(RPC_URL.to_string());
+
+        let blockhash = client
+            .get_latest_blockhash()
+            .expect("Failed to get blockhash");
+
+        let balance = client
+            .get_balance(&from_pubkey)
+            .expect("Failed to get balance");
+
+        println!("Current balance: {} lamports", balance);
+
+        //Create mock tx to estimate fee
+        let msg = Message::new_with_blockhash(
+            &[transfer(&from_pubkey, &to_pubkey, balance)],
+            Some(&from_pubkey),
+            &blockhash,
+        );
+
+        let fee = client.get_fee_for_message(&msg).expect("Failed to get fee");
+
+        println!("Estimated fee: {} lamports", fee);
+
+        //Final tx with (balance - fee)
+        let tx = Transaction::new_signed_with_payer(
+            &[transfer(&from_pubkey, &to_pubkey, balance - fee)],
+            Some(&from_pubkey),
+            &[&keypair],
+            blockhash,
+        );
+
+        let sig = client
+            .send_and_confirm_transaction(&tx)
+            .expect("Failed to send transaction");
+
+        println!("✅ Dev wallet emptied!");
         println!("https://explorer.solana.com/tx/{}?cluster=devnet", sig);
     }
 }
