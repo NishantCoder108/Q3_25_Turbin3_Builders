@@ -2,8 +2,14 @@
   "name": "onchain-operations",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "dependencies": {
-    "@solana/spl-token": "^0.4.13"
+    "@solana/spl-token": "^0.4.13",
+    "@solana/web3.js": "^1.98.2",
+    "dotenv": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10"
   }
 }
