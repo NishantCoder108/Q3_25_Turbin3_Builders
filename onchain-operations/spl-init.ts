@@ -33,3 +33,13 @@ const connection = new Connection(RPCURL, "confirmed");
     }
 })();
 
+/* After running this script, We will see the mint address printed in the console.
+  - This mint address similar as USDC, USDT, related token addresses.
+  - We can create Associated Token Account for this mint address to hold tokens.
+
+
+
+
+  * Learned during importing file:
+    - The `with { type: 'json' }` syntax is used to import JSON files in a way that allows TypeScript to understand the type of the imported data.
+*/

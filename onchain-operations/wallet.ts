@@ -11,14 +11,14 @@ import walletKeypair from "./onchain-wallet-key.json" with { type: "json" };
 
 // Requesting Airdrop
 const keypair = Keypair.fromSecretKey(new Uint8Array(walletKeypair));
-const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+const connection = new Connection("http://localhost:8899", "confirmed");
 
 (async () => {
   try {
     console.log(`Public Key: ${keypair.publicKey.toBase58()}`);
     const txhash = await connection.requestAirdrop(
       keypair.publicKey,
-      2 * LAMPORTS_PER_SOL
+      200 * LAMPORTS_PER_SOL
     );
     console.log(`TX: https://explorer.solana.com/tx/${txhash}?cluster=localhost`);
   } catch (e) {
@@ -26,11 +26,14 @@ const connection = new Connection("https://api.devnet.solana.com", "confirmed");
   }
 })();
 
+
+
+// *Checking Balance:
 // (async () => {
 //   try {
 //     console.log(`Public Key: ${keypair.publicKey.toBase58()}`);
 //     const txhash = await connection.getBalance(keypair.publicKey);
-//     console.log(`TX: https://explorer.solana.com/tx/${txhash}?cluster=devnet`);
+//     console.log(`Solana Balance : ${txhash / LAMPORTS_PER_SOL} SOL`);
 //   } catch (e) {
 //     console.error(`Oops, something went wrong: ${e}`);
 //   }
