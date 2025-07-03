@@ -1,1 +1,5 @@
 node_modules
+.env
+
+onchain-wallet-key.json
+test-ledger
