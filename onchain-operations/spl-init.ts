@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { Keypair, Connection } from "@solana/web3.js";
-import { createMint, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
+import { createMint, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import wallet from './onchain-wallet-key.json' with { type: 'json' };
 
 
@@ -23,7 +23,7 @@ const connection = new Connection(RPCURL, "confirmed");
             {
                 commitment: "confirmed",
             },
-            TOKEN_2022_PROGRAM_ID // SPL Token program ID
+            TOKEN_PROGRAM_ID // SPL Token program ID
         );
         console.log(`Mint created succssfully! 🎉 . \nMint Adress: ${mint.toBase58()}`);
         console.log("See here https://explorer.solana.com/address/" + mint.toBase58() + "?cluster=devnet");
@@ -37,6 +37,8 @@ const connection = new Connection(RPCURL, "confirmed");
 // * EUgLjd93Eonw6hk2tGfxRwEB56cgdwwgHdWSfdAD1eMg
 // * ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss
 // * AcrbMJPCDVSkmoKHFwvbfziycKAjNYth5TMFBfefofh2
+// * HLNRE3aBChpDthsEuGsiBN1z9sV7awWdBa3w5cCoioiA at TOKEN_2022_PROGRAM_ID
+// * Bixqv75HTEPcQasbSuHfd1s98f9nkVzsH25wTx7rR2Wi at Token Program Id
 
 
 // * Transaction Hash:https://explorer.solana.com/address/AcrbMJPCDVSkmoKHFwvbfziycKAjNYth5TMFBfefofh2?cluster=devnet
@@ -50,4 +52,9 @@ const connection = new Connection(RPCURL, "confirmed");
 
   * Learned during importing file:
     - The `with { type: 'json' }` syntax is used to import JSON files in a way that allows TypeScript to understand the type of the imported data.
+
+
+
+   * Last MintAddress Signature: https://explorer.solana.com/address/HLNRE3aBChpDthsEuGsiBN1z9sV7awWdBa3w5cCoioiA?cluster=devnet 
+   * Last :https://explorer.solana.com/address/Bixqv75HTEPcQasbSuHfd1s98f9nkVzsH25wTx7rR2Wi?cluster=devnet
 */
