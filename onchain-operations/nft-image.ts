@@ -10,7 +10,7 @@ import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { readFileSync } from 'fs';
 
 
-const RPC_URL = process.env.ALCHEMY_RPC_URL || "https://api.devnet.solana.com";
+const RPC_URL = process.env.RPC_URL || "https://api.devnet.solana.com";
 console.log("RPC URL: ", RPC_URL);
 
 const umi = createUmi(RPC_URL, "confirmed");
@@ -26,9 +26,10 @@ umi.use(signerIdentity(signer));
   console.log("Uploading Image...");
   try {
     //1. Load image
-    const image = await readFileSync("./plane.png");
+    // const image = await readFileSync("./plane.png");
+    const image = await readFileSync("/home/nishant/Downloads/punch_thanos.gif");
     //2. Convert image to generic file.
-    let genericFile = createGenericFile(image, "mars-planet-travel.png", {
+    let genericFile = createGenericFile(image, "thanos_punch.gif", {
       contentType: "image/png",
     });
     //3. Upload image
@@ -43,5 +44,6 @@ umi.use(signerIdentity(signer));
 
 // // https://gateway.irys.xyz/A3N3Bo3Bhtg2dxVV1otmRdo63BMRnKs8wCMciq6t8Wnz
 // // https://gateway.irys.xyz/CSjVDFKuGC18jZi4ikQdXB9ew9Hyp7diK3x6H34Qg9K1
+// https://gateway.irys.xyz/FYeuTv1q95qB9Tu8RsNaQJGCcaNjd4rCxr9jG4816jUC
 
 //irys is fast compared to arweave

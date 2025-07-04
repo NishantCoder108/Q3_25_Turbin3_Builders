@@ -6,7 +6,7 @@ import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-meta
 import base58 from "bs58";
 
 
-const RPC_URL = process.env.ALCHEMY_RPC_URL || "https://api.devnet.solana.com";
+const RPC_URL = process.env.RPC_URL || "https://api.devnet.solana.com";
 
 const umi = createUmi(RPC_URL, "confirmed");
 
@@ -22,10 +22,10 @@ const mint = generateSigner(umi);
         let tx = createNft(
             umi, {
             mint,
-            name: "Plane Mars Travel",
-            symbol: "PMT",
+            name: "Infinity Clash",
+            symbol: "CLASH",
             // this is the metadata url from the metadata upload step
-            uri: "https://gateway.irys.xyz/25EDWNQPUhjUtHBVhRYF51YrYirU72NdeaEM3eWXzgjR",
+            uri: "https://gateway.irys.xyz/ArTApwwyRFTeHH5iEcFtv8xZJyxhKCFd82eTSpW6TffN",
             sellerFeeBasisPoints: percentAmount(10),
             creators: [
                 {
@@ -49,54 +49,18 @@ const mint = generateSigner(umi);
     }
 })();
 
+/**
+ * * Infinity Clash NFT Metadata URI*
+ * R1 :  Succesfully Minted! Check out your TX here:
+https://explorer.solana.com/tx/3HucevVi2xduTdRRWDAH6BVY6kEdPF2agKdJxFCieibfi1yoV2pVHD2FkeUaReYiN8kNkN7SX32M3UEo66dQhRMi?cluster=devnet
+Mint Address:  EAoXDVgknrEYi2D44aUoPFskHuP4ZD9sCx7GFhu7ykdB
+ * 
 
 
-
-// import { createNft } from '@metaplex-foundation/mpl-token-metadata';
-import { TransactionBuilder } from '@metaplex-foundation/umi';
-
-async function mintNftWithCustomRetry() {
-    let attempts = 0;
-    const maxAttempts = 5;
-
-    while (attempts < maxAttempts) {
-        try {
-            const builder = transactionBuilder()
-                .add(createNft(
-                    umi, {
-                    mint,
-                    name: "Plane Mars Travel",
-                    symbol: "PMT",
-                    // this is the metadata url from the metadata upload step
-                    uri: "https://gateway.irys.xyz/25EDWNQPUhjUtHBVhRYF51YrYirU72NdeaEM3eWXzgjR",
-                    sellerFeeBasisPoints: percentAmount(10),
-                    creators: [
-                        {
-                            address: myKeypairSigner.publicKey,
-                            share: 100,
-                            verified: true,
-                        },
-                    ],
-                }
-
-                ))
-                .setBlockhash(await umi.rpc.getLatestBlockhash());
-
-            const confirmResult = await builder.sendAndConfirm(umi);
-            return confirmResult.signature;
-        } catch (error) {
-            attempts++;
-            if (attempts === maxAttempts) throw error;
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
-        }
-    }
-}
+ * * Plane Mars Travel NFT Metadata URI  *   
+ * R2 :  https://explorer.solana.com/address/DP52DDXEwe6YXvWPsiyjFtjtLeC92vPTMj73fEBsZXfo/transfers?cluster=devnet
+ */
 
 
 
 
-// mintNftWithCustomRetry() // other way to mint
-
-
-// Mint NFT on Solana Devnet
-// https://explorer.solana.com/address/DP52DDXEwe6YXvWPsiyjFtjtLeC92vPTMj73fEBsZXfo/transfers?cluster=devnet
