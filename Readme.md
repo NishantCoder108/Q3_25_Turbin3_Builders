@@ -17,8 +17,10 @@ If you are on this repo. I want to clarify this repo is specially made for learn
    -  Run `spl-init.ts` to create Mint Account
    -  Run `spl-mintdata.ts` to mint token with metadata
    -  Run `spl-mint.ts` to mint token
+   -  ![SPL Token Preview](./onchain-operations/images/token.png)
   
 7.  ***For Creating NFT Collection***
     -  Run `nft-image.ts` to create and upload NFT Image
     -  Run `nft-metadata.ts` to create NFT Metadata
     -  Run `nft-mint.ts` to create NFT Mint
+    -  ![NFT Mint Preview](./onchain-operations/images/mars-travel.png)
