@@ -4,8 +4,7 @@ import { createMint, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import wallet from './onchain-wallet-key.json' with { type: 'json' };
 
 
-const RPCURL = "http://localhost:8899";
-// https://turbine-solanad-4cde.devnet.rpcpool.com/9a9da9cf-6db1-47dc-839a-55aca5c9c80a
+const RPCURL = process.env.RPC_URL || "https://api.devnet.solana.com";
 
 
 const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
@@ -32,6 +31,15 @@ const connection = new Connection(RPCURL, "confirmed");
         console.log(`Oops, something went wrong: ${error}`);
     }
 })();
+
+// Mint Address: (Created by running this script)
+// * BoWcEciASxYHicGQS8B66DGezbeXKSftMUBSPzG3HVd2
+// * EUgLjd93Eonw6hk2tGfxRwEB56cgdwwgHdWSfdAD1eMg
+// * ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss
+// * AcrbMJPCDVSkmoKHFwvbfziycKAjNYth5TMFBfefofh2
+
+
+// * Transaction Hash:https://explorer.solana.com/address/AcrbMJPCDVSkmoKHFwvbfziycKAjNYth5TMFBfefofh2?cluster=devnet
 
 /* After running this script, We will see the mint address printed in the console.
   - This mint address similar as USDC, USDT, related token addresses.
