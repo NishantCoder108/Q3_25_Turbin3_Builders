@@ -1,26 +1,57 @@
-# q3_25_turbin3_builders
-Hey there!,
-If you are on this repo. I want to clarify this repo is specially made for learning and practicing the concepts in depth that I have learned in the turbin3 cohort.
 
-----
-`OnChain_Wallet_Key= ` **"ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"**`
+# Q3 2025 – Turbin3 Builders
+
+Hey there! 👋  
+If you're reading this, welcome!  
+This repository is specially created for learning and practicing advanced concepts I explored during the **Turbin3 Q3 2025 Cohort**.
+
+---
+
+### 🔐 On-Chain Wallet Key
+
+```env
+OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
+````
+
+---
+
+### 📘 My Learnings
+
+1. Initialize TypeScript project:
+
+   ```bash
+   npx tsc --init
+   ```
+
+2. Set the following in `tsconfig.json`:
+
+   * `"resolveJsonModule": true` → Allows importing `.json` files
+   * `"allowSyntheticDefaultImports": true` → Enables importing modules without default exports
+   * `"module": "esnext"` → Fixes issues when importing JSON with `import wallet from './onchain-wallet-key.json' assert { type: "json" };`
+
+3. **Node.js Version:**
+   `v24.3.0` is used for this project.
+
+---
+
+### 🖼️ Creating an NFT Collection
+
+* Run `nft-image.ts` → Uploads the NFT image
+* Run `nft-metadata.ts` → Creates the NFT metadata
+* Run `nft-mint.ts` → Mints the NFT
+
+![NFT Mint Preview](./onchain-operations/images/mars-travel.png)
+
+---
+
+### 💰 Creating SPL Tokens (like USDC, USDT, etc.)
+
+* Run `spl-init.ts` → Creates a Mint Account
+* Run `spl-mintdata.ts` → Adds token metadata
+* Run `spl-mint.ts` → Mints tokens
+
+![SPL Token Preview](./onchain-operations/images/token.png)
 
 
 
-### My Learnings:
-1. `npx tsc --int` to create tsconfig file
-2. `resolveJsonModule` is set to true in tsconfig file to allow importing json files
-3. `allowSyntheticDefaultImports` is set to true in tsconfig file to allow importing modules without default export
-4. `"module": "esnext"` is set to true in tsconfig file. It fix importing `JSON` files importing error `import wallet from './onchain-wallet-key.json' with { type: "json" };`
-5. `v24.3.0` - Node version for this repo
-6. ***For Creating TOken Like USDC, USDT, etc.***
-   -  Run `spl-init.ts` to create Mint Account
-   -  Run `spl-mintdata.ts` to mint token with metadata
-   -  Run `spl-mint.ts` to mint token
-   -  ![SPL Token Preview](./onchain-operations/images/token.png)
-  
-7.  ***For Creating NFT Collection***
-    -  Run `nft-image.ts` to create and upload NFT Image
-    -  Run `nft-metadata.ts` to create NFT Metadata
-    -  Run `nft-mint.ts` to create NFT Mint
-    -  ![NFT Mint Preview](./onchain-operations/images/mars-travel.png)
+
