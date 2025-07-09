@@ -18,8 +18,8 @@ pub mod anchor_vaults {
         Ok(())
     }
 
-    pub fn deposit(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
+    pub fn deposit(ctx: Context<Deposit>) -> Result<()> {
+        msg!("Deposit from: {:?}", ctx.);
         Ok(())
     }
 
@@ -82,14 +82,151 @@ impl<'info> Initialize<'info> {
     }
 }
 
+
+// #[derive(Accounts)]
+// pub struct Payment<'info> {
+//     #[account(mut)]
+//     pub user: Signer<'info>,
+//     #[account(
+//         mut,
+//         seeds = [b"vault", vault_state.key().as_ref()], 
+//         bump = vault_state.vault_bump,
+//     )]
+//     pub vault: SystemAccount<'info>,
+//     #[account(
+//         seeds = [b"state", user.key().as_ref()],
+//         bump = vault_state.state_bump,
+//     )]
+//     pub vault_state: Account<'info, VaultState>,
+//     pub system_program: Program<'info, System>,
+// }
 #[derive(Accounts)]
-pub struct Deposit {}
+pub struct Payment<'info> {
+
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    #[account(
+        seeds = [b"userstate", user.key().as_ref()], 
+        bump = vault_state.user_state_bump,
+        
+    )]
+    pub vault_state: Account<'info, VaultState>,
+
+    #[account(
+        mut,
+        seeds = [b"vault", vault_state.key().as_ref()],
+        bump = vault_state.user_vault_bump,
+    )]
+    pub vault: SystemAccount<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+
+
+impl<'info> Payment<'info> {
+     pub fn deposit(&mut self, amount: u64) -> Result<()> {
+
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_accounts = Transfer {
+            from: self.user.to_account_info(),
+            to: self.vault.to_account_info(),
+        };
+
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+
+        transfer(cpi_ctx, amount)?;
+
+        Ok(())
+    }
+
+
+     pub fn withdraw(&mut self, amount: u64) -> Result<()> {
+
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_accounts = Transfer {
+            from: self.vault.to_account_info(),
+            to: self.user.to_account_info(),
+        };
+
+        let seeds = &[
+            b"vault",
+            self.vault_state.to_account_info().key.as_ref(),
+            &[self.vault_state.user_vault_bump]
+        ];
+        let signer_seeds = &[&seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
+
+        transfer(cpi_ctx, amount)?;
+
+        Ok(())
+    }
+
+
+}
+
+/**
+ * *Note : Transfer SOL from wallet address  to PDA is easy because of wallet will sign the transaction
+ * - But in case of , Transfer from PDA to Wallet address we use signer seeds for singing
+ *  *
+ * ``CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);``
+ */
 
 #[derive(Accounts)]
 pub struct Withdraw {}
 
 #[derive(Accounts)]
-pub struct Close {}
+pub struct Close <'info> {
+    #[account(mut)]
+    pub user: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [b"userstate", user.key().as_ref()], 
+        bump= vault_state.user_state_bump,
+        close= user,
+        
+    )]
+    pub vault_state: Account<'info, VaultState>,
+
+    #[account(
+        mut,
+        seeds = [b"vault", vault_state.key().as_ref()],
+        bump =vault_state.user_vault_bump,
+    )]
+    pub vault: SystemAccount<'info>,
+
+    pub system_program: Program<'info, System>,
+}
+
+
+impl<'info> Close<'info> {
+    pub fn close(&mut self) -> Result<()> {
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_accounts = Transfer {
+            from: self.vault.to_account_info(),
+            to: self.user.to_account_info(),
+        };
+
+        let seeds = &[
+            b"vault",
+            self.vault_state.to_account_info().key.as_ref(),
+            &[self.vault_state.user_vault_bump],
+        ];
+
+        let signer_seeds = &[&seeds[..]];
+
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
+
+        transfer(cpi_ctx, self.vault.lamports())?;
+
+        Ok(())
+    }
+}
 
 #[account]
 pub struct VaultState {
