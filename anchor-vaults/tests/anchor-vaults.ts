@@ -2,15 +2,107 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorVaults } from "../target/types/anchor_vaults";
 
-describe("anchor-vaults", () => {
+describe("anchor-vault", () => {
   // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+  const provider = anchor.AnchorProvider.env();
+  anchor.setProvider(provider);
 
-  const program = anchor.workspace.anchorVaults as Program<AnchorVaults>;
+  const program = anchor.workspace.anchor_vaults as Program<AnchorVaults>;
 
+  const vaultState = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("userstate"), provider.publicKey.toBytes()], program.programId)[0];
+  const vault = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("vault"), vaultState.toBytes()], program.programId)[0];
+
+  console.log("vaultstate", vaultState.toBase58(), vault.toBase58())
   it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
+
+    const tx = await program.methods
+      .initialize()
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault info", (await provider.connection.getAccountInfo(vault)));
+  });
+
+  it("Deposit 2 SOL", async () => {
+    const tx = await program.methods
+      .deposit(new anchor.BN(2 * anchor.web3.LAMPORTS_PER_SOL))
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault info", (await provider.connection.getAccountInfo(vault)));
+    console.log("Your vault balance", (await provider.connection.getBalance(vault)).toString());
+  });
+
+
+  it("Deposit 5 SOL", async () => {
+    const tx = await program.methods
+      .deposit(new anchor.BN(5 * anchor.web3.LAMPORTS_PER_SOL))
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault info", (await provider.connection.getAccountInfo(vault)));
+    console.log("Your vault balance", (await provider.connection.getBalance(vault)).toString());
+  });
+  it("Withdraw 1 SOL", async () => {
+    const tx = await program.methods
+      .withdraw(new anchor.BN(1 * anchor.web3.LAMPORTS_PER_SOL))
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault balance", (await provider.connection.getBalance(vault)).toString());
+  });
+
+  it("Withdraw 1 SOL", async () => {
+    const tx = await program.methods
+      .withdraw(new anchor.BN(1 * anchor.web3.LAMPORTS_PER_SOL))
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault balance", (await provider.connection.getBalance(vault)).toString());
+  });
+
+  it("Close vault", async () => {
+    const tx = await program.methods
+      .close()
+      .accountsPartial({
+        user: provider.wallet.publicKey,
+        vaultState,
+        vault,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .rpc();
+
+    console.log("\nYour transaction signature", tx);
+    console.log("Your vault info", (await provider.connection.getAccountInfo(vault)));
   });
 });
