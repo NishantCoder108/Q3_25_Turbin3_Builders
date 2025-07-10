@@ -18,19 +18,22 @@ pub mod anchor_vaults {
         Ok(())
     }
 
-    pub fn deposit(ctx: Context<Deposit>) -> Result<()> {
-        msg!("Deposit from: {:?}", ctx.);
+    pub fn deposit(ctx: Context<Payment>, amount:u64) -> Result<()> {
+        msg!("Deposit from: {:?}", ctx.accounts.user.to_account_info());
+
+        ctx.accounts.deposit(amount)?;
         Ok(())
     }
 
-    pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {
-        msg!("Withdrawing...");
+    pub fn withdraw(ctx: Context<Payment>, amount:u64) -> Result<()> {
+        msg!("Withdrawing from {:?} to {:?}" , ctx.accounts.vault.to_account_info(), ctx.accounts.user.to_account_info());
+        ctx.accounts.withdraw(amount)?;
         Ok(())
     }
 
     pub fn close(_ctx: Context<Close>) -> Result<()> {
-        msg!("Closing your account ");
-
+        msg!("Closing your account -> {:?} ",_ctx.accounts.vault.to_account_info());
+         _ctx.accounts.close()?;
         Ok(())
     }
 }
@@ -75,6 +78,7 @@ impl<'info> Initialize<'info> {
 
         transfer(cpi_ctx, rent_exempt)?;
 
+        // here storing bump on onchain for generating pda that was already created
         self.vault_state.user_state_bump = bumps.vault_state;
         self.vault_state.user_vault_bump = bumps.vault;
 
@@ -83,23 +87,7 @@ impl<'info> Initialize<'info> {
 }
 
 
-// #[derive(Accounts)]
-// pub struct Payment<'info> {
-//     #[account(mut)]
-//     pub user: Signer<'info>,
-//     #[account(
-//         mut,
-//         seeds = [b"vault", vault_state.key().as_ref()], 
-//         bump = vault_state.vault_bump,
-//     )]
-//     pub vault: SystemAccount<'info>,
-//     #[account(
-//         seeds = [b"state", user.key().as_ref()],
-//         bump = vault_state.state_bump,
-//     )]
-//     pub vault_state: Account<'info, VaultState>,
-//     pub system_program: Program<'info, System>,
-// }
+
 #[derive(Accounts)]
 pub struct Payment<'info> {
 
@@ -175,8 +163,6 @@ impl<'info> Payment<'info> {
  * ``CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);``
  */
 
-#[derive(Accounts)]
-pub struct Withdraw {}
 
 #[derive(Accounts)]
 pub struct Close <'info> {
