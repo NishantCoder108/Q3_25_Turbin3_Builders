@@ -1,36 +1,16 @@
 
 # Q3 2025 – Turbin3 Builders
 
-Hey there! 👋  
-If you're reading this, welcome!  
-This repository is specially created for learning and practicing advanced concepts I explored during the **Turbin3 Q3 2025 Cohort**.
+#### 👋 Welcome to the Repository!
 
 ---
 
-### 🔐 On-Chain Wallet Key
+### Projects :
+1. **Anchor Vault**
+    - Live url ➞ [https://storesol.vercel.app ](https://storesol.vercel.app/)
+    - Code url ➞ [👉 See here](https://github.com/NishantCoder108/Q3_25_Turbin3_Builders/tree/master/anchor-vaults/app)
 
-```env
-OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
-````
 
----
-
-### 📘 My Learnings
-
-1. Initialize TypeScript project:
-
-   ```bash
-   npx tsc --init
-   ```
-
-2. Set the following in `tsconfig.json`:
-
-   * `"resolveJsonModule": true` → Allows importing `.json` files
-   * `"allowSyntheticDefaultImports": true` → Enables importing modules without default exports
-   * `"module": "esnext"` → Fixes issues when importing JSON with `import wallet from './onchain-wallet-key.json' assert { type: "json" };`
-
-3. **Node.js Version:**
-   `v24.3.0` is used for this project.
 
 ---
 
@@ -53,5 +33,37 @@ OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
 ![SPL Token Preview](./onchain-operations/images/token.png)
 
 
+
+
+---
+
+### 🔐 On-Chain Wallet Key
+```env
+// Every transaction with below public address
+OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
+````
+
+---
+
+<details>
+   <summary>   Explore during learning</summary>
+
+
+1. Initialize TypeScript project:
+
+   ```bash
+   npx tsc --init
+   ```
+
+2. Set the following in `tsconfig.json`:
+
+   * `"resolveJsonModule": true` → Allows importing `.json` files
+   * `"allowSyntheticDefaultImports": true` → Enables importing modules without default exports
+   * `"module": "esnext"` → Fixes issues when importing JSON with `import wallet from './onchain-wallet-key.json' assert { type: "json" };`
+
+3. **Node.js Version:**
+   `v24.3.0` is used for this project.
+
+</details>
 
 
