@@ -12,7 +12,7 @@ anchor_vaults = "G4ezSKewUYAZ5zE8aquJhRMAvaBYJoHaEcAtUY4VigLt"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
