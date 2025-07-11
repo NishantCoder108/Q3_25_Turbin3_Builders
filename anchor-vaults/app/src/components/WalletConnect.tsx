@@ -9,11 +9,11 @@ import { PublicKey } from "@solana/web3.js";
 export default function Appbar() {
   const wallet = useWallet();
 
-  const [isClient, setIsClient] = useState(false);
+  const isWalletConnected = wallet.connected;
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  //   useEffect(() => {
+  //     setIsClient(true);
+  //   }, []);
 
   function getPubkeyShortString(pubkey: PublicKey) {
     const pk = pubkey.toString();
@@ -37,11 +37,11 @@ export default function Appbar() {
         }}
       >
         {`${
-          isClient
+          isWalletConnected
             ? wallet.publicKey
               ? getPubkeyShortString(wallet.publicKey).pubkey
-              : "Connect wallet"
-            : "Loading..."
+              : "Loading..."
+            : "Connect wallet"
         }`}
       </WalletMultiButtonDynamic>
     </header>

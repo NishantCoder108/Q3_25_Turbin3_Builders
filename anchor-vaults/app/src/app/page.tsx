@@ -16,10 +16,12 @@ export default function Home() {
 
   const handleCreateVault = async () => {
     try {
-      setLoading(true);
       if (!wallet.publicKey) {
         toast.error("Please connect your wallet to create vault");
+        return;
       }
+      setLoading(true);
+
       const program = getVaultProgram(provider);
 
       await initializeVault(program);
