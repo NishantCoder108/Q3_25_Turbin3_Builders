@@ -310,7 +310,7 @@ export const idl = {
     ],
     "accounts": [
         {
-            "name": "VaultState",
+            "name": "vaultState",
             "discriminator": [
                 228,
                 196,
@@ -325,7 +325,7 @@ export const idl = {
     ],
     "types": [
         {
-            "name": "VaultState",
+            "name": "vaultState",
             "type": {
                 "kind": "struct",
                 "fields": [
@@ -656,7 +656,7 @@ export type AnchorVault = {
     ],
     "accounts": [
         {
-            "name": "VaultState",
+            "name": "vaultState",
             "discriminator": [
                 228,
                 196,
@@ -671,7 +671,7 @@ export type AnchorVault = {
     ],
     "types": [
         {
-            "name": "VaultState",
+            "name": "vaultState",
             "type": {
                 "kind": "struct",
                 "fields": [
