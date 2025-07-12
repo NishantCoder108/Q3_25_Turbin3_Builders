@@ -14,6 +14,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
 import { VaultError } from "@/lib/error";
+import { set } from "@coral-xyz/anchor/dist/cjs/utils/features";
+import InteractingSol from "@/components/InteractingSol";
 
 export default function Home() {
   const wallet = useWallet();
@@ -21,7 +23,8 @@ export default function Home() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [vaultPubKey, setVaultPubKey] = useState("");
   const handleCreateVault = async () => {
     if (!wallet.publicKey) {
       toast.error("Please connect your wallet to create vault");
@@ -34,25 +37,30 @@ export default function Home() {
 
       const vaultPubkey = getVaultStatePDA(wallet.publicKey, program.programId);
       console.log("vaultPubkey : ", vaultPubkey.toString());
-      console.log("Has fetch?:", typeof program.account.vaultState.fetch);
+      setVaultPubKey(vaultPubkey.toString());
       console.log(Object.keys(program.account));
+
       if (!program.account.vaultState) {
-        throw new Error("vault_state account not found in program.account");
+        throw new Error("vaultState account not found in program.account");
       }
+
       const vaultAccount = await program.account.vaultState.fetch(vaultPubkey);
       console.log({ vaultAccount });
 
       if (!vaultAccount) {
         await initializeVault(program);
 
-        toast.success("Yooo! dVault created!");
-        router.push("/vault");
+        setIsInitialized(true);
+        toast.success("Secure vault created successfully.");
+        // router.push("/vault");
         console.log("Vault not initialized, run initializeVault()");
       } else {
-        toast.error("Vault already exists ,skip initialize");
+        toast.error("Vault exists. No further action required.");
+        setIsInitialized(true);
         console.log("Vault already exists, skip initialize");
       }
     } catch (e) {
+      setIsInitialized(false);
       if (e instanceof VaultError) {
         console.log("Handled VaultError:", e.message);
       } else {
@@ -63,18 +71,6 @@ export default function Home() {
     }
   };
   return (
-    // <div className="w-screen h-[80vh] flex flex-col items-center justify-center  space-y-5">
-    //   <h1 className="array-font md:text-6xl text-4xl text-center">
-    //     Create, deposit, <br /> withdraw anytime.
-    //   </h1>
-    //   <Button
-    //     onClick={handleCreateVault}
-    //     className="bg-gradient-to-r from-green-500 to-green-600 text-white md:px-10 px-8 md:py-6 py-4 border-b-4 border-green-600 khand-font md:text-lg cursor-pointer"
-    //   >
-    //     {loading ? "Creating..." : "Create dVault"}
-    //   </Button>
-    // </div>
-    // <div className="max-w-[50rem] m">
     <div className="text-white  max-w-[50rem] mx-auto pt-28   gap-7 flex flex-col items-center justify-center  text-center">
       <h1 className="md:text-6xl font-bold leading-tight">
         {" "}
@@ -88,31 +84,46 @@ export default function Home() {
         security.
       </p>
 
-      <Button
-        onClick={handleCreateVault}
-        disabled={isLoading ? true : false}
-        className="flex gap-1.5 mt-5 items-center  justify-center cursor-pointer bg-[#522AA5] hover:bg-[#532aa5b4] rounded-full"
-      >
-        {" "}
-        {isLoading ? (
-          <TextShimmerWave
-            className="[--base-color:#fff] [--base-gradient-color:#e9e9e96e]"
-            duration={1}
-            spread={1}
-            zDistance={1}
-            scaleDistance={1.1}
-            rotateYDistance={20}
-          >
-            Launching ...
-          </TextShimmerWave>
-        ) : (
-          <>
-            {" "}
-            <Vault /> <span> Launch Your Vault </span>{" "}
-          </>
-        )}
-      </Button>
+      {isInitialized || (
+        <Button
+          onClick={handleCreateVault}
+          disabled={isLoading ? true : false}
+          className="flex gap-1.5 mt-5 items-center  justify-center cursor-pointer bg-[#522AA5] hover:bg-[#532aa5b4] rounded-full"
+        >
+          {" "}
+          {isLoading ? (
+            <TextShimmerWave
+              className="[--base-color:#fff] [--base-gradient-color:#e9e9e96e]"
+              duration={1}
+              spread={1}
+              zDistance={1}
+              scaleDistance={1.1}
+              rotateYDistance={20}
+            >
+              Launching ...
+            </TextShimmerWave>
+          ) : (
+            <>
+              {" "}
+              <Vault /> <span> Launch Your Vault </span>{" "}
+            </>
+          )}
+        </Button>
+      )}
 
+      {isInitialized && (
+        <div className="flex flex-col items-center justify-center  text-sm mt-10">
+          <h1 className="font-extralight">{vaultPubKey}</h1>
+
+          <h1 className="font-bold text-5xl mt-4">Avail Bal : 90.455 SOL</h1>
+        </div>
+      )}
+
+      {isInitialized && (
+        <div>
+          <InteractingSol />
+        </div>
+      )}
       <div>{/* <TrustedBy /> */}</div>
     </div>
   );
