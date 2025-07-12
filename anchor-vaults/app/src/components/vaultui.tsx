@@ -80,7 +80,7 @@ export default function VaultUi() {
     }
   }, [wallet.publicKey]);
   return (
-    <div className="md:w-1/2 w-4/5 h-3/5 flex flex-col items-center justify-start p-5 py-10 space-y-2 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-3xl border-green-400 border-2">
+    <div className="md:w-1/2 w-4/5 h-3/5 flex flex-col items-center justify-start p-5 py-10 space-y-2  shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-3xl border-green-400 border-2">
       <h2 className="array-font text-6xl">dVault</h2>
 
       {/* wallet balance */}
