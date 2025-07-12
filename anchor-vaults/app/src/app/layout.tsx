@@ -27,8 +27,8 @@ export default function RootLayout({
           className={`bg-[url("/images/bg.png")] bg-cover bg-center bg-no-repeat bg-fixed h-screen`}
         >
           <SolanaProvider>
-            <Navbar />
             <Toaster position="bottom-right" />
+            <Navbar />
             {children}
           </SolanaProvider>
         </div>
