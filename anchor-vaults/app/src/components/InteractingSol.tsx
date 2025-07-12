@@ -11,6 +11,7 @@ import {
   getVaultPDA,
   getVaultProgram,
   getVaultStatePDA,
+  withdraw,
 } from "@/utils/anchor_vaults";
 import { toast } from "sonner";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -23,18 +24,18 @@ export default function InteractingSol({
 }) {
   const [activeTab, setActiveTab] = useState("deposit");
   const [solAmount, setSolAmount] = useState<number>(0);
-  const [vaultBalance, setVaultBalance] = useState<string>("0");
   const wallet = useWallet();
   const provider = useAnchorProvider();
-  //   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleDeposit = async () => {
+    if (!wallet.publicKey) {
+      toast.error("Please connect your wallet to create vault");
+      return;
+    }
     try {
       setLoading(true);
-      if (!wallet.publicKey) {
-        toast.error("Please connect your wallet to create vault");
-      }
+
       const program = getVaultProgram(provider);
 
       if (solAmount <= 0) {
@@ -45,15 +46,16 @@ export default function InteractingSol({
 
       await deposit(amountInSol, program);
 
-      toast.success(
-        "🎉 Awesome! Your SOL deposit is now safely stored in the vault!"
-      );
+      toast.success("Awesome! Your SOL is safely stored in the vault.!");
       getVaultSolBalance();
     } catch (e) {
       console.error("error depositing fund to vault : ", e);
       console.warn("Error creating vault");
-      toast.error("Error depositing fund to vault");
+      toast.error("Uh-oh! Couldn't deposit your funds to the vault.");
       setLoading(false);
+    } finally {
+      setLoading(false);
+      setSolAmount(0);
     }
   };
 
@@ -74,6 +76,52 @@ export default function InteractingSol({
       toast.error("Failed to close the vault. Please try again.");
     } finally {
       setLoading(false);
+      setSolAmount(0);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!wallet.publicKey) {
+      toast.error("Please connect your wallet to create vault");
+      return;
+    }
+    try {
+      setLoading(true);
+      const program = getVaultProgram(provider);
+
+      const vaultState = getVaultStatePDA(wallet.publicKey, program.programId);
+      const vault = getVaultPDA(vaultState, program.programId);
+
+      const rawBalance = await provider.connection.getBalance(vault);
+
+      // get rent-exempt minimum for a system account (no data)
+      const rentExempt =
+        await provider.connection.getMinimumBalanceForRentExemption(10);
+
+      // Usable balance (if negative, clamp to 0)
+      const usableBalanceLamports = Math.max(rawBalance - rentExempt, 0);
+
+      if (solAmount <= 0) {
+        toast.error("Amount need to be greater than 0");
+        return;
+      }
+
+      if (solAmount > usableBalanceLamports / LAMPORTS_PER_SOL) {
+        toast.error(`Oops! No funds available to withdraw.`);
+        return;
+      }
+
+      const amountInSol = solAmount * LAMPORTS_PER_SOL;
+      await withdraw(amountInSol, program);
+
+      toast.success("🎉 You’ve successfully made your withdrawal!");
+    } catch (e) {
+      console.log("Error withdrawing funds:", e);
+
+      toast.error("Error withdrawing funds. Please try again.");
+    } finally {
+      setLoading(false);
+      setSolAmount(0);
     }
   };
   return (
@@ -115,7 +163,6 @@ export default function InteractingSol({
           </button>
         </div>
 
-        {/* Input Section */}
         {activeTab === "deposit" && (
           <div className="flex space-x-2">
             <Input
@@ -124,13 +171,13 @@ export default function InteractingSol({
               step="0.01"
               required
               placeholder="Enter amount in SOL"
-              value={solAmount}
+              value={isNaN(solAmount) ? "" : solAmount}
               onChange={(e) => setSolAmount(parseFloat(e.target.value))}
-              className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-lg"
+              className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-l-full"
             />
             <Button
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-lg"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-r-full cursor-pointer"
               onClick={handleDeposit}
             >
               Deposit
@@ -143,11 +190,15 @@ export default function InteractingSol({
             <Input
               type="number"
               placeholder="Enter SOL amount"
-              value={String(solAmount)}
+              value={isNaN(solAmount) ? "" : solAmount}
               onChange={(e) => setSolAmount(parseFloat(e.target.value))}
               className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-lg"
             />
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-lg">
+            <Button
+              onClick={handleWithdraw}
+              disabled={loading}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-lg"
+            >
               Withdraw
             </Button>
           </div>
