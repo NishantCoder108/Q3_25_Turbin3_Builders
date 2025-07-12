@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SolanaProvider } from "@/providers/SolanaProvider";
 import { Toaster } from "sonner";
-import Appbar from "@/components/WalletConnect";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// import Appbar from "@/components/WalletConnect";
+import Navbar from "@/components/Navbar";
+import { Inter } from "next/font/google";
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter", // optional: for CSS variable usage
 });
 
 export const metadata: Metadata = {
@@ -26,14 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SolanaProvider>
-          <Appbar />
-          <Toaster position="bottom-right" />
-          {children}
-        </SolanaProvider>
+      <body className={` ${inter.variable} antialiased`}>
+        <div
+          className={`bg-[url("/images/bg.png")] bg-cover bg-center bg-no-repeat bg-fixed h-screen`}
+        >
+          <SolanaProvider>
+            <Navbar />
+            <Toaster position="bottom-right" />
+            {children}
+          </SolanaProvider>
+        </div>
       </body>
     </html>
   );
