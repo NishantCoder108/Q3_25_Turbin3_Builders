@@ -1,12 +1,10 @@
 "use client";
-import {
-  BaseWalletMultiButton,
-  WalletModalProvider,
-} from "@solana/wallet-adapter-react-ui";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import React from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletIcon } from "lucide-react";
 import { SOLBalance } from "./WalletBalance";
+import dynamic from "next/dynamic";
 
 const LABELS = {
   "change-wallet": "Change wallet",
@@ -34,7 +32,7 @@ const ConnectWallet = () => {
       </div>
       <WalletModalProvider>
         <div className="flex items-center justify-between">
-          <BaseWalletMultiButton
+          <BaseWalletMultiButtonDynamic
             style={isWalletConnected ? connectedStyle : disconnectedStyle}
             labels={LABELS}
           />
@@ -64,6 +62,14 @@ const disconnectedStyle = {
   height: "2.5rem",
   cursor: "pointer",
 };
+
+const BaseWalletMultiButtonDynamic = dynamic(
+  () =>
+    import("@solana/wallet-adapter-react-ui").then(
+      (mod) => mod.BaseWalletMultiButton
+    ),
+  { ssr: false }
+);
 
 export default ConnectWallet;
 
