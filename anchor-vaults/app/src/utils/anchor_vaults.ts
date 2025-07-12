@@ -4,6 +4,7 @@ import {
 } from "@solana/web3.js";
 import { AnchorVault, idl } from "./solana_idltypes";
 import { AnchorProvider, Program, BN } from "@coral-xyz/anchor";
+import { VaultError } from "@/lib/error";
 
 // get the vault program to interact
 export function getVaultProgram(
@@ -38,7 +39,6 @@ export const getVaultPDA = (
 // --- initialize vault
 export const initializeVault = async (program: Program<AnchorVault>) => {
     try {
-        // const program = getVaultProgram();
         const wallet = program.provider.wallet;
 
         if (!wallet || !wallet.publicKey) {
@@ -50,7 +50,7 @@ export const initializeVault = async (program: Program<AnchorVault>) => {
         const vaultState = getVaultStatePDA(user, program.programId);
         const vault = getVaultPDA(vaultState, program.programId);
 
-        await program.methods
+        const tx = await program.methods
             .initialize()
             .accountsPartial({
                 user,
@@ -60,8 +60,14 @@ export const initializeVault = async (program: Program<AnchorVault>) => {
 
             })
             .rpc();
+
+        if (!tx) {
+            throw new VaultError("Transaction failed");
+        }
+
     } catch (e) {
         console.error("error initializing vault : ", e);
+        throw e;
     }
 };
 
@@ -91,9 +97,14 @@ export const deposit = async (
                 system_program: PublicKey.default,
             })
             .rpc();
+        if (!tx) {
+            throw new VaultError("Transaction failed");
+        }
+
         console.log("tx : ", tx);
     } catch (e) {
         console.error("error depositing SOL : ", e);
+        throw e;
     }
 };
 
@@ -113,7 +124,7 @@ export const withdraw = async (
     const vaultState = getVaultStatePDA(user, program.programId);
     const vault = getVaultPDA(vaultState, program.programId);
 
-    await program.methods
+    const tx = await program.methods
         .withdraw(new BN(amount))
         .accountsPartial({
             user,
@@ -122,6 +133,14 @@ export const withdraw = async (
             system_program: PublicKey.default,
         })
         .rpc();
+
+
+    if (!tx) {
+        throw new VaultError("Transaction failed");
+    }
+
+
+
 };
 
 //   close vault
@@ -147,3 +166,4 @@ export const closeVault = async (program: Program<AnchorVault>) => {
         })
         .rpc();
 };
+
