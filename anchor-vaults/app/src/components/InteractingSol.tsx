@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAnchorProvider } from "@/hooks/useAnchorProvider";
 import {
+  closeVault,
   deposit,
   getVaultPDA,
   getVaultProgram,
@@ -13,6 +14,7 @@ import {
 } from "@/utils/anchor_vaults";
 import { toast } from "sonner";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { TextShimmerWave } from "./motion-primitives/text-shimmer-wave";
 
 export default function InteractingSol({
   getVaultSolBalance,
@@ -55,12 +57,31 @@ export default function InteractingSol({
     }
   };
 
+  const handleClose = async () => {
+    try {
+      if (!wallet.publicKey) {
+        toast.error("Please connect your wallet to create vault");
+        return;
+      }
+      setLoading(true);
+      const program = getVaultProgram(provider);
+
+      await closeVault(program);
+
+      toast.success(`Account closed! We’re sad to see you go.`);
+    } catch (e) {
+      console.error("error closing the vault : ", e);
+      toast.error("Failed to close the vault. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className=" p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="flex space-x-1 bg-slate-800/50 p-1 rounded-full">
           <button
-            disabled={loading ? true : false}
+            disabled={loading}
             onClick={() => setActiveTab("deposit")}
             className={`flex-1 py-2 px-4 text-sm font-medium rounded-full transition-colors max-w-fit ${
               activeTab === "deposit"
@@ -71,6 +92,7 @@ export default function InteractingSol({
             Deposit SOL
           </button>
           <button
+            disabled={loading}
             onClick={() => setActiveTab("withdraw")}
             className={`flex-1 py-2 px-4 text-sm font-medium rounded-full transition-colors max-w-fit ${
               activeTab === "withdraw"
@@ -81,6 +103,7 @@ export default function InteractingSol({
             Withdraw SOL
           </button>
           <button
+            disabled={loading}
             onClick={() => setActiveTab("close")}
             className={`flex-1 py-2 px-4 text-sm font-medium rounded-full transition-colors max-w-fit ${
               activeTab === "close"
@@ -106,7 +129,7 @@ export default function InteractingSol({
               className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-lg"
             />
             <Button
-              disabled={loading ? true : false}
+              disabled={loading}
               className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-lg"
               onClick={handleDeposit}
             >
@@ -135,8 +158,28 @@ export default function InteractingSol({
             <p className="text-gray-300 text-sm">
               Are you sure you want to close your account?
             </p>
-            <Button variant="destructive" className="w-full">
-              Close Account
+            <Button
+              onClick={handleClose}
+              disabled={loading}
+              variant="destructive"
+              className="w-full rounded-full"
+            >
+              {loading ? (
+                <TextShimmerWave
+                  className="[--base-color:#fff] [--base-gradient-color:#e9e9e96e]"
+                  duration={1}
+                  spread={1}
+                  zDistance={1}
+                  scaleDistance={1.1}
+                  rotateYDistance={20}
+                >
+                  Closing account...
+                </TextShimmerWave>
+              ) : (
+                <>
+                  <span> Close Account </span>
+                </>
+              )}
             </Button>
           </div>
         )}

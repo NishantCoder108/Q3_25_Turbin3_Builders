@@ -136,7 +136,7 @@ export default function Home() {
       {isInitialized || (
         <Button
           onClick={handleCreateVault}
-          disabled={isLoading ? true : false}
+          disabled={isLoading}
           className="flex gap-1.5 mt-5 items-center  justify-center cursor-pointer bg-[#522AA5] hover:bg-[#532aa5b4] rounded-full"
         >
           {" "}
