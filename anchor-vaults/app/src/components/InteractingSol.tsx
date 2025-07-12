@@ -14,7 +14,11 @@ import {
 import { toast } from "sonner";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-export default function InteractingSol() {
+export default function InteractingSol({
+  getVaultSolBalance,
+}: {
+  getVaultSolBalance: () => void;
+}) {
   const [activeTab, setActiveTab] = useState("deposit");
   const [solAmount, setSolAmount] = useState<number>(0);
   const [vaultBalance, setVaultBalance] = useState<string>("0");
@@ -39,13 +43,14 @@ export default function InteractingSol() {
 
       await deposit(amountInSol, program);
 
-      toast.success("Yooo! You just made your deposit!");
+      toast.success(
+        "🎉 Awesome! Your SOL deposit is now safely stored in the vault!"
+      );
       getVaultSolBalance();
     } catch (e) {
       console.error("error depositing fund to vault : ", e);
       console.warn("Error creating vault");
       toast.error("Error depositing fund to vault");
-    } finally {
       setLoading(false);
     }
   };

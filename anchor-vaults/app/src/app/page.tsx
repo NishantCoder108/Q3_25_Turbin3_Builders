@@ -3,6 +3,7 @@ import TrustedBy from "@/components/TrustedBy";
 import { Button } from "@/components/ui/button";
 import { useAnchorProvider } from "@/hooks/useAnchorProvider";
 import {
+  getVaultPDA,
   getVaultProgram,
   getVaultStatePDA,
   initializeVault,
@@ -10,21 +11,25 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Vault } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
 import { VaultError } from "@/lib/error";
 import { set } from "@coral-xyz/anchor/dist/cjs/utils/features";
 import InteractingSol from "@/components/InteractingSol";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export default function Home() {
   const wallet = useWallet();
   const provider = useAnchorProvider();
-  const router = useRouter();
+  // const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [vaultPubKey, setVaultPubKey] = useState("");
+  const [vaultBalance, setVaultBalance] = useState("0");
+  const [isVaultBalLoading, setIsVaultBalLoading] = useState(false);
+
   const handleCreateVault = async () => {
     if (!wallet.publicKey) {
       toast.error("Please connect your wallet to create vault");
@@ -70,6 +75,50 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+
+  const getVaultSolBalance = async () => {
+    if (!wallet.publicKey) return;
+
+    try {
+      setIsVaultBalLoading(true);
+      const program = getVaultProgram(provider);
+      const vaultState = getVaultStatePDA(wallet.publicKey, program.programId);
+      const vault = getVaultPDA(vaultState, program.programId);
+
+      const vaultAccountInfo = await provider.connection.getAccountInfo(vault);
+
+      if (vaultAccountInfo === null) {
+        toast.error("No vault account found, please create your vault");
+        return;
+      }
+
+      // get total SOL in the vault account
+      const rawBalance = await provider.connection.getBalance(vault);
+
+      console.log("rawBalance : ", rawBalance);
+      // get rent-exempt minimum for a system account (no data)
+      const rentExempt =
+        await provider.connection.getMinimumBalanceForRentExemption(10);
+
+      // Usable balance (if negative, clamp to 0)
+      const usableBalanceLamports = Math.max(rawBalance - rentExempt, 0);
+
+      console.log("usableBalanceLamports : ", usableBalanceLamports);
+      const balanceInSOL = usableBalanceLamports / LAMPORTS_PER_SOL;
+      setVaultBalance(balanceInSOL.toFixed(7));
+    } catch (e) {
+      console.error("Failed to fetch vault balance:", e);
+      toast.error("Could not fetch vault balance");
+    } finally {
+      setIsVaultBalLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isInitialized) {
+      getVaultSolBalance();
+    }
+  }, [wallet.publicKey, isInitialized]);
   return (
     <div className="text-white  max-w-[50rem] mx-auto pt-28   gap-7 flex flex-col items-center justify-center  text-center">
       <h1 className="md:text-6xl font-bold leading-tight">
@@ -115,13 +164,15 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center  text-sm mt-10">
           <h1 className="font-extralight">{vaultPubKey}</h1>
 
-          <h1 className="font-bold text-5xl mt-4">Avail Bal : 90.455 SOL</h1>
+          <h1 className="font-bold text-5xl mt-4">
+            Avail Bal : {vaultBalance} SOL
+          </h1>
         </div>
       )}
 
       {isInitialized && (
         <div>
-          <InteractingSol />
+          <InteractingSol getVaultSolBalance={getVaultSolBalance} />
         </div>
       )}
       <div>{/* <TrustedBy /> */}</div>
