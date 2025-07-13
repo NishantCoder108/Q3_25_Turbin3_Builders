@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 // import Appbar from "@/components/WalletConnect";
 import Navbar from "@/components/Navbar";
 import { Inter } from "next/font/google";
+import { BalanceProvider } from "@/context/BalContext";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter", // optional: for CSS variable usage
@@ -27,9 +28,11 @@ export default function RootLayout({
           className={`bg-[url("/images/bg.png")] bg-cover bg-center bg-no-repeat bg-fixed h-screen`}
         >
           <SolanaProvider>
-            <Toaster position="bottom-right" />
-            <Navbar />
-            {children}
+            <BalanceProvider>
+              <Toaster position="bottom-right" />
+              <Navbar />
+              {children}
+            </BalanceProvider>
           </SolanaProvider>
         </div>
       </body>
