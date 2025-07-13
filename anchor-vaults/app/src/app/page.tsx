@@ -7,6 +7,7 @@ import {
   getVaultProgram,
   getVaultStatePDA,
   initializeVault,
+  isVaultInitialized,
 } from "@/utils/anchor_vaults";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Vault } from "lucide-react";
@@ -47,16 +48,18 @@ export default function Home() {
         throw new Error("vaultState account not found in program.account");
       }
 
-      const vaultAccount = await program.account.vaultState.fetch(vaultPubkey);
-      console.log({ vaultAccount });
+      const isVault = await isVaultInitialized(provider, wallet.publicKey);
 
-      if (!vaultAccount) {
+      // const vaultAccount = await program.account.vaultState.fetch(vaultPubkey);
+      // console.log({ vaultAccount });
+
+      if (isVault === false) {
         await initializeVault(program);
 
         setIsInitialized(true);
-        toast.success("Secure vault created successfully.");
         console.log("Vault not initialized, run initializeVault()");
-      } else {
+        toast.success("Secure vault created successfully.");
+      } else if (isVault === true) {
         setIsInitialized(true);
         toast.error("🎉 All good! Vault already exists.");
         console.log("🎉 All good! Vault already exists.");
@@ -170,7 +173,10 @@ export default function Home() {
 
       {isInitialized && (
         <div>
-          <InteractingSol getVaultSolBalance={getVaultSolBalance} />
+          <InteractingSol
+            getVaultSolBalance={getVaultSolBalance}
+            setIsInitialized={setIsInitialized}
+          />
         </div>
       )}
       <div>{/* <TrustedBy /> */}</div>

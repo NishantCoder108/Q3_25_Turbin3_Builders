@@ -185,3 +185,39 @@ export const closeVault = async (program: Program<AnchorVault>) => {
 
 };
 
+
+
+export const isVaultInitialized = async (
+    provider: AnchorProvider,
+    publicKey: PublicKey
+): Promise<boolean> => {
+    try {
+        const program = getVaultProgram(provider);
+        const vaultPubkey = getVaultStatePDA(publicKey, program.programId);
+
+        console.log("Vault PubKey:", vaultPubkey.toString());
+
+        if (!program.account.vaultState) {
+            throw new VaultError("vaultState account not found in program.account");
+        }
+
+        const vaultAccount = await program.account.vaultState.fetch(vaultPubkey);
+
+        console.log("Vault account found:", vaultAccount);
+        return true;
+    } catch (error: unknown) {
+        const msg =
+            error && typeof error === "object" && "message" in error
+                ? (error as { message: string }).message
+                : String(error);
+
+        if (msg.includes("Account does not exist")) {
+            console.log("Vault is not initialized.");
+            return false;
+        }
+
+        // For other unexpected issues
+        console.error("Unexpected error while checking vault:", error);
+        throw new VaultError("Failed to check vault status: " + msg);
+    }
+};
