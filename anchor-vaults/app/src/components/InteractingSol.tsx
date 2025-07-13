@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -16,17 +16,23 @@ import {
 import { toast } from "sonner";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { TextShimmerWave } from "./motion-primitives/text-shimmer-wave";
+import { BalanceContext } from "@/context/BalContext";
 
 export default function InteractingSol({
   getVaultSolBalance,
+  setIsInitialized,
 }: {
   getVaultSolBalance: () => void;
+  setIsInitialized: (value: boolean) => void;
 }) {
   const [activeTab, setActiveTab] = useState("deposit");
   const [solAmount, setSolAmount] = useState<number>(0);
   const wallet = useWallet();
   const provider = useAnchorProvider();
   const [loading, setLoading] = useState(false);
+
+  const context = useContext(BalanceContext);
+  const { fetchBalance } = context;
 
   const handleDeposit = async () => {
     if (!wallet.publicKey) {
@@ -47,6 +53,7 @@ export default function InteractingSol({
       await deposit(amountInSol, program);
 
       toast.success("Awesome! Your SOL is safely stored in the vault.!");
+      fetchBalance();
       getVaultSolBalance();
     } catch (e) {
       console.error("error depositing fund to vault : ", e);
@@ -68,10 +75,27 @@ export default function InteractingSol({
       setLoading(true);
       const program = getVaultProgram(provider);
 
-      await closeVault(program);
+      const vaultPubkey = getVaultStatePDA(wallet.publicKey, program.programId);
 
-      toast.success(`Account closed! We’re sad to see you go.`);
-      getVaultSolBalance();
+      if (!program.account.vaultState) {
+        throw new Error("vaultState account not found in program.account");
+      }
+
+      const vaultAccount = await program.account.vaultState.fetch(vaultPubkey);
+
+      if (!vaultAccount) {
+        toast.error(
+          "Oops! You don’t have a vault yet. Create one to continue."
+        );
+        return;
+      } else {
+        await closeVault(program);
+        toast.success(`Account closed! We’re sad to see you go.`);
+        fetchBalance();
+        setIsInitialized(false);
+
+        getVaultSolBalance();
+      }
     } catch (e) {
       console.error("error closing the vault : ", e);
       toast.error("Failed to close the vault. Please try again.");
@@ -116,6 +140,7 @@ export default function InteractingSol({
       await withdraw(amountInSol, program);
 
       toast.success("🎉 You’ve successfully made your withdrawal!");
+      fetchBalance();
       getVaultSolBalance();
     } catch (e) {
       console.log("Error withdrawing funds:", e);
