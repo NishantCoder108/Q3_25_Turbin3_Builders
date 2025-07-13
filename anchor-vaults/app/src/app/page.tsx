@@ -1,5 +1,5 @@
 "use client";
-import TrustedBy from "@/components/TrustedBy";
+// import TrustedBy from "@/components/TrustedBy";
 import { Button } from "@/components/ui/button";
 import { useAnchorProvider } from "@/hooks/useAnchorProvider";
 import {
@@ -22,7 +22,6 @@ import { AnimatedNumberBasic } from "@/components/AnimatedNumber";
 export default function Home() {
   const wallet = useWallet();
   const provider = useAnchorProvider();
-  // const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
