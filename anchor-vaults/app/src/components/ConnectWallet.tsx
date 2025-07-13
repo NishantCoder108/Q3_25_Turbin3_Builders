@@ -25,7 +25,7 @@ const ConnectWallet = () => {
       <div className=" flex items-center text-white   ">
         {isWalletConnected && (
           <>
-            <WalletIcon className="mr-2 h-4 w-4  hidden   sm:block" />
+            <WalletIcon className=" h-4 w-4  hidden   sm:block" />
             <SOLBalance />{" "}
           </>
         )}
