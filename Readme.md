@@ -1,17 +1,39 @@
 
-# Q3 2025 – Turbin3 Builders
+<h2 align="center">👋 Welcome to the Repository!</h2>
 
-#### 👋 Welcome to the Repository!
 
----
+### 🧠 About 
 
-### Projects :
-1. **Anchor Vault**
-    - Live url ➞ [https://storesol.vercel.app ](https://storesol.vercel.app/)
-    - Code 👉 ➞ [ anchor-vaults](https://github.com/NishantCoder108/Q3_25_Turbin3_Builders/tree/master/anchor-vaults/app)
-    - Vault Demo Video ⤵
+This repository contains end-to-end blockchain projects and learnings 
 
-https://github.com/user-attachments/assets/68954679-4d09-4f8f-b4d0-232b3854f1e9
+- ✅ Smart Contracts using **Solana**, **Rust**, **Anchor**
+- ✅ Development using **Figma**, **Next.js**, **React.js**, **JS**, **TS**, **Node.js**, **TailwindCSS** and so on
+- ✅ Demo videos
+
+
+
+### 📌 Featured Project
+> **🔐 Anchor Vaults** – A secure vault system built on Solana using Anchor + Next.js
+
+https://github.com/user-attachments/assets/0be643bb-7737-4e18-a26c-f48eb69c8fc5
+
+
+- 🧠 Tech: `Rust` `Anchor` `Next.js` `TailwindCSS` `shadcn/ui`
+- 💻 [View Code](https://github.com/NishantCoder108/Q3_25_Turbin3_Builders/tree/master/anchor-vaults/app)
+- 🌐 [Live URL](https://storesol.vercel.app)
+
+
+
+
+
+<details>
+   <summary>   Explore during learning</summary>
+
+### 🔐 On-Chain Wallet Key
+```env
+// Every transaction with below public address
+OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
+````
 
 ---
 
@@ -36,20 +58,8 @@ https://github.com/user-attachments/assets/68954679-4d09-4f8f-b4d0-232b3854f1e9
 
 
 
----
-
-### 🔐 On-Chain Wallet Key
-```env
-// Every transaction with below public address
-OnChain_Wallet_Key = "ExUttmYkaNKjTPgg6yRkZdrdCH2VC1N5MDp7L424fCss"
-````
 
 ---
-
-<details>
-   <summary>   Explore during learning</summary>
-
-
 1. Initialize TypeScript project:
 
    ```bash
