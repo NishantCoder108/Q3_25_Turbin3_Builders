@@ -71,6 +71,7 @@ export default function InteractingSol({
       await closeVault(program);
 
       toast.success(`Account closed! We’re sad to see you go.`);
+      getVaultSolBalance();
     } catch (e) {
       console.error("error closing the vault : ", e);
       toast.error("Failed to close the vault. Please try again.");
@@ -115,6 +116,7 @@ export default function InteractingSol({
       await withdraw(amountInSol, program);
 
       toast.success("🎉 You’ve successfully made your withdrawal!");
+      getVaultSolBalance();
     } catch (e) {
       console.log("Error withdrawing funds:", e);
 
@@ -192,12 +194,12 @@ export default function InteractingSol({
               placeholder="Enter SOL amount"
               value={isNaN(solAmount) ? "" : solAmount}
               onChange={(e) => setSolAmount(parseFloat(e.target.value))}
-              className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-lg"
+              className="flex-1 bg-gray-200 border-0 text-gray-800 placeholder:text-gray-500 rounded-l-full"
             />
             <Button
               onClick={handleWithdraw}
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-lg"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 rounded-r-full"
             >
               Withdraw
             </Button>
