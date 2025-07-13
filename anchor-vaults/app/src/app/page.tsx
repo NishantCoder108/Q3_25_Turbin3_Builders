@@ -10,14 +10,13 @@ import {
 } from "@/utils/anchor_vaults";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Vault } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
 import { VaultError } from "@/lib/error";
-import { set } from "@coral-xyz/anchor/dist/cjs/utils/features";
 import InteractingSol from "@/components/InteractingSol";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { AnimatedNumberBasic } from "@/components/AnimatedNumber";
 
 export default function Home() {
   const wallet = useWallet();
@@ -28,7 +27,6 @@ export default function Home() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [vaultPubKey, setVaultPubKey] = useState("");
   const [vaultBalance, setVaultBalance] = useState("0");
-  const [isVaultBalLoading, setIsVaultBalLoading] = useState(false);
 
   const handleCreateVault = async () => {
     if (!wallet.publicKey) {
@@ -57,12 +55,11 @@ export default function Home() {
 
         setIsInitialized(true);
         toast.success("Secure vault created successfully.");
-        // router.push("/vault");
         console.log("Vault not initialized, run initializeVault()");
       } else {
-        toast.error("Vault exists. No further action required.");
         setIsInitialized(true);
-        console.log("Vault already exists, skip initialize");
+        toast.error("🎉 All good! Vault already exists.");
+        console.log("🎉 All good! Vault already exists.");
       }
     } catch (e) {
       setIsInitialized(false);
@@ -80,7 +77,6 @@ export default function Home() {
     if (!wallet.publicKey) return;
 
     try {
-      setIsVaultBalLoading(true);
       const program = getVaultProgram(provider);
       const vaultState = getVaultStatePDA(wallet.publicKey, program.programId);
       const vault = getVaultPDA(vaultState, program.programId);
@@ -109,8 +105,6 @@ export default function Home() {
     } catch (e) {
       console.error("Failed to fetch vault balance:", e);
       toast.error("Could not fetch vault balance");
-    } finally {
-      setIsVaultBalLoading(false);
     }
   };
 
@@ -164,9 +158,13 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center  text-sm mt-10">
           <h1 className="font-extralight">{vaultPubKey}</h1>
 
-          <h1 className="font-bold text-5xl mt-4">
-            Avail Bal : {vaultBalance} SOL
-          </h1>
+          <div className="flex items-center justify-center font-bold text-5xl mt-4">
+            {" "}
+            Avail Bal : <AnimatedNumberBasic
+              number={Number(vaultBalance)}
+            />{" "}
+            SOL{" "}
+          </div>
         </div>
       )}
 
